@@ -1,0 +1,76 @@
+name: atheer
+description: تطبيق أذكار إسلامي بأسلوب Islamic Zen UI
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # UI & Animations
+  cupertino_icons: ^1.0.6
+  flutter_vector_icons: ^2.0.0
+  animations: ^2.0.9
+  
+  # State Management & Storage
+  shared_preferences: ^2.2.2
+  provider: ^6.1.1
+  sqflite: ^2.3.0
+  path: ^1.9.0          # تم إضافتها لحل مشكلة التعرّف على المسارات في DatabaseService
+  path_provider: ^2.1.1
+  
+  # Notifications
+  flutter_local_notifications: ^16.3.0
+  timezone: ^0.9.2
+  
+  # Utilities
+  url_launcher: ^6.2.1
+  share_plus: ^7.2.1
+  vibration: ^1.8.3
+  
+  # Fonts
+  google_fonts: ^6.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+  flutter_launcher_icons: ^0.13.1
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/images/splash_bg.jpg
+    - assets/images/
+
+  fonts:
+    - family: Amiri
+      fonts:
+        - asset: assets/fonts/Amiri-Regular.ttf
+        - asset: assets/fonts/Amiri-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Amiri-Italic.ttf
+          style: italic
+
+# إعدادات أيقونة التطبيق
+flutter_launcher_icons:
+  image_path: "assets/images/splash_bg.jpg"
+  android: "launcher_icon"
+  adaptive_icon_background: "#004D40"
+  adaptive_icon_foreground: "assets/images/splash_bg.jpg"
+  min_sdk_android: 21
+  ios: true
+  remove_alpha_ios: false
+  image_path_ios: "assets/images/splash_bg.jpg"
+  web:
+    generate: false
+  windows:
+    generate: false
+  linux:
+    generate: false
+  macos:
+    generate: false
