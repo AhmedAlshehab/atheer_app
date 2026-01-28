@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'core/theme/app_theme.dart';
 import 'screens/splash_screen.dart';
 import 'screens/home_screen.dart';
@@ -10,28 +11,30 @@ import 'services/database_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // تثبيت اتجاه الشاشة
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
-  
-  // إعداد شريط الحالة
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.light,
-    systemNavigationBarColor: Color(0xFF1B4D3E),
-    systemNavigationBarIconBrightness: Brightness.light,
-  ));
-  
-  // تهيئة خدمة التنبيهات
-  await NotificationService().initialize();
-  
-  // جدولة التنبيهات اليومية
-  await NotificationService().scheduleAllNotifications();
-  
-  // تهيئة قاعدة البيانات
-  await DatabaseService().database;
-  
+  if (!kIsWeb) {
+    // تثبيت اتجاه الشاشة
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+    
+    // إعداد شريط الحالة
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: Color(0xFF1B4D3E),
+      systemNavigationBarIconBrightness: Brightness.light,
+    ));
+    
+    // تهيئة خدمة التنبيهات
+    await NotificationService().initialize();
+    
+    // جدولة التنبيهات اليومية
+    await NotificationService().scheduleAllNotifications();
+    
+    // تهيئة قاعدة البيانات
+    await DatabaseService().database;
+  }
+
   runApp(const AtheerApp());
 }
 
