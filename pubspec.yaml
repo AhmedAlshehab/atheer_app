@@ -19,7 +19,7 @@ dependencies:
   shared_preferences: ^2.2.2
   provider: ^6.1.1
   sqflite: ^2.3.0
-  path: ^1.9.0          # تم إضافتها لحل مشكلة التعرّف على المسارات في DatabaseService
+  path: ^1.9.0
   path_provider: ^2.1.1
   
   # Notifications
@@ -44,8 +44,9 @@ flutter:
   uses-material-design: true
   
   assets:
-    - assets/images/splash_bg.jpg
     - assets/images/
+    - assets/images/splash_bg.jpg
+    - assets/fonts/
 
   fonts:
     - family: Amiri
