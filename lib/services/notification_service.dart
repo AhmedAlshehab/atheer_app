@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -98,6 +98,12 @@ class NotificationService {
       matchDateTimeComponents: DateTimeComponents.time,
       payload: 'evening_dhikr',
     );
+  }
+
+  Future<void> scheduleAllNotifications() async {
+    if (kIsWeb) return;
+    await scheduleMorningDhikrNotification();
+    await scheduleEveningDhikrNotification();
   }
 
   Future<void> showInstantNotification({required String title, required String body}) async {

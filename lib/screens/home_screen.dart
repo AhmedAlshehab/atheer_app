@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import '../models/dhikr_model.dart';
 import '../data/dhikr_data.dart';
-import '../data/local_storage.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text_styles.dart';
 import '../core/utils/share_utils.dart';
 import '../widgets/dhikr_card.dart';
 import '../widgets/category_header.dart';
+import '../services/database_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -19,7 +19,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> 
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final LocalStorage _storage = LocalStorage();
+  final DatabaseService _dbService = DatabaseService();
   final List<Dhikr> _morningDhikr = [];
   final List<Dhikr> _eveningDhikr = [];
   final List<Dhikr> _tasbeehDhikr = [];
@@ -37,11 +37,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Future<void> _initializeData() async {
-    // تصفير جميع العدادات عند التشغيل
-    await _storage.initializeAllCounters();
-    
-    // تحميل التقدم المحفوظ
-    final progressMap = await _storage.getProgressMap();
+    final progressMap = await _dbService.getAllDhikrProgress();
     
     // تحديث بيانات الأذكار بالتقدم المحفوظ
     _updateDhikrWithProgress(DhikrData.morningDhikr, progressMap, _morningDhikr);
@@ -74,9 +70,22 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Future<void> _calculateStatistics() async {
-    _totalCompleted = await _storage.getTotalCompletedCount();
-    _totalTarget = await _storage.getTotalDhikrCount();
-    _overallProgress = await _storage.getOverallProgress();
+    final progressMap = await _dbService.getAllDhikrProgress();
+    int totalCompleted = 0;
+    progressMap.forEach((key, value) {
+      totalCompleted += ((value['currentCount'] ?? 0) as num).toInt();
+    });
+
+    final allDhikr = DhikrData.getAllDhikr();
+    int totalTarget = 0;
+    for (var dhikr in allDhikr) {
+      totalTarget += dhikr.targetCount;
+    }
+
+    _totalCompleted = totalCompleted;
+    _totalTarget = totalTarget;
+    _overallProgress =
+        (totalTarget > 0) ? (totalCompleted / totalTarget) : 0.0;
   }
 
   Future<void> _incrementDhikr(Dhikr dhikr, List<Dhikr> list) async {
@@ -91,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen>
       );
       
       list[index] = updatedDhikr;
-      await _storage.updateDhikrProgress(updatedDhikr);
+      await _dbService.saveDhikrProgress(updatedDhikr);
       await _calculateStatistics();
       
       if (mounted) {
@@ -110,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen>
       );
       
       list[index] = updatedDhikr;
-      await _storage.updateDhikrProgress(updatedDhikr);
+      await _dbService.saveDhikrProgress(updatedDhikr);
       await _calculateStatistics();
       
       if (mounted) {
@@ -133,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen>
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-              await _storage.resetAllProgress();
+              await _dbService.resetAllProgress();
               await _initializeData();
             },
             child: const Text('تأكيد'),

@@ -8,9 +8,9 @@ class DatabaseService {
   factory DatabaseService() => _instance;
   DatabaseService._internal();
 
-  static sqflite.Database? _database;
+  static Database? _database;
 
-  Future<sqflite.Database?> get database async {
+  Future<Database?> get database async {
     if (kIsWeb) return null; 
     if (_database != null) return _database!;
     _database = await _initDatabase();
@@ -69,7 +69,7 @@ class DatabaseService {
         'completion_percentage': completionPercentage,
         'streak_days': streakDays
       },
-      conflictAlgorithm: sqflite.ConflictAlgorithm.replace,
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
